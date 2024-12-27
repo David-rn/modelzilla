@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "modelzilla"
+version = "0.1.0"
+description = ""
+authors = ["David Redo <dredonieto@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+ray = {extras = ["serve"], version = "^2.40.0"}
+transformers = {version = "^4.47.1", extras = ["hf"]}
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
