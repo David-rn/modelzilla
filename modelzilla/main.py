@@ -1,34 +1,48 @@
 import argparse
-from plugins import discover_plugins
-from pathlib import Path
-from PIL import Image
+from functools import partial
+
+from modelzilla.plugins import discover_plugins
+from modelzilla.media import file_output_sink, plot_output_sink
+from modelzilla.pipeline import CLIPluginPipeline
 
 
 def make_parser():
     parser = argparse.ArgumentParser(
         description="Plugin system with dynamically loaded arguments."
     )
-
     parser.add_argument(
+        "-i",
         "--input_media",
         required=True,
         help="Input media. It can be an image, a folder with images or a url",
     )
-    # parser.add_argument(
-    #     "--output_folder",
-    #     default="./",
-    #     help="Path to output folder. If no specified, the output will be in the inn the current folder",
-    # )
-    parser.add_argument("--plugins_folder", default=None, help="Path to custom plugins folder.")
+    parser.add_argument(
+        "-os",
+        "--output_sink",
+        default="plot",
+        choices=["file", "plot"],
+        help="Select the output sink. It can be a file or a plot",
+    )
+    parser.add_argument(
+        "-of",
+        "--output_folder",
+        default=None,
+        help="Path to output folder. It must be specified if the output sink is a file",
+    )
+    parser.add_argument(
+        "--plugins_folder", default=None, help="Path to custom plugins folder."
+    )
     known_args, _ = parser.parse_known_args()
     known_args_dict = vars(known_args)
+
+    if known_args.output_sink == "file" and known_args.output_folder is None:
+        raise ValueError("Output folder must be specified if output sink is a file.")
 
     plugins = discover_plugins(known_args.plugins_folder)
 
     subparsers = parser.add_subparsers(
         dest="plugin_name", help="Select which plugin to use"
     )
-
     for plugin_name, plugin_class in plugins.items():
         plugin_class = plugins[plugin_name]
         plugin_parser = subparsers.add_parser(
@@ -53,27 +67,15 @@ def main():
     plugins = discover_plugins(args.plugins_folder)
 
     plugin_class = plugins[args.plugin_name]
-    instance = plugin_class(**plugin_args)
+    plugin_instance = plugin_class(**plugin_args)
 
-    input_path = args.input_media
-    if input_path.startswith("http"):
-        import requests
-        image = Image.open(requests.get(input_path, stream=True).raw)
-        instance.inference(image)
-    elif Path(input_path).is_dir():
-        for image_path in Path(input_path).glob("**/*.jpg"):
-            if image_path.is_file():
-                image = Image.open(image_path)
-                instance.inference(image)
-    elif Path(input_path).is_file():
-        image = Image.open(input_path)
-        instance.inference(image)
-    else:
-        raise ValueError(f"Invalid input path: {input_path}")
-    
-    
-    
-    
+    if args.output_sink == "file":
+        output_sink = partial(file_output_sink, output_path=args.output_folder)
+    elif args.output_sink == "plot":
+        output_sink = plot_output_sink
+
+    cli_pipeline = CLIPluginPipeline(args.input_media, plugin_instance, output_sink)
+    cli_pipeline.run()
 
 
 if __name__ == "__main__":

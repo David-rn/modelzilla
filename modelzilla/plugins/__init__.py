@@ -3,7 +3,9 @@ import traceback
 from importlib import util
 import inspect
 
-class ArgparseMixin:
+import supervision as sv
+
+class CLIArgparse:
 
     @classmethod
     def build_cmd_parser(cls, parser):
@@ -32,8 +34,9 @@ class IPluginRegistry(type):
 
 class IPlugin(object, metaclass=IPluginRegistry):
 
-    def inference(self):
+    def inference(self) -> sv.Detections:
         raise NotImplementedError
+
 
 
 path = os.path.abspath(__file__)
