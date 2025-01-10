@@ -11,10 +11,9 @@ class HFObjectDetection(CLIPlugin):
     This example plugin can execute any object detection model from the HuggingFace.
 
     Example:
-        ```shell
-        modelzilla -i image.png -os plot HFObjectDetection --model_repo facebook/detr-resnet-50
-        ```
-
+    ```shell
+    modelzilla -i image.png -os plot HFObjectDetection --model_repo facebook/detr-resnet-50
+    ```
     """
 
     def __init__(self, model_repo: str, device: str = "cpu"):
