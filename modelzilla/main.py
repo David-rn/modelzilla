@@ -2,8 +2,8 @@ import argparse
 from functools import partial
 
 from modelzilla.plugins import discover_plugins
-from modelzilla.media import file_output_sink, plot_output_sink
-from modelzilla.pipeline import CLIPluginPipeline
+from modelzilla.sinks import file_output_sink, plot_output_sink
+from modelzilla.pipeline import run_cli_plugin_pipeline
 
 
 def make_parser():
@@ -74,8 +74,7 @@ def main():
     elif args.output_sink == "plot":
         output_sink = plot_output_sink
 
-    cli_pipeline = CLIPluginPipeline(args.input_media, plugin_instance, output_sink)
-    cli_pipeline.run()
+    run_cli_plugin_pipeline(args.input_media, plugin_instance, output_sink)
 
 
 if __name__ == "__main__":
