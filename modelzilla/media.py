@@ -1,12 +1,12 @@
 from typing import Iterator
 from dataclasses import dataclass
 import requests
-from os.path import basename
 from pathlib import Path
 
 import supervision as sv
 from PIL import Image
-import matplotlib.pyplot as plt
+
+from modelzilla.plugins import InferenceResult
 
 IMAGE_EXTENSIONS = (".jpg", ".jpeg", ".png")
 
@@ -34,7 +34,7 @@ def prepare_input(input_path: str) -> Iterator[Media]:
         raise ValueError(f"Invalid input path: {input_path}")
 
 
-def annotate(media: Media, results: sv.Detections) -> Image.Image:
+def box_annotator(media: Media, results: sv.Detections) -> Image.Image:
     box_annotator = sv.BoxAnnotator()
     rich_label_annotator = sv.RichLabelAnnotator(text_position=sv.Position.TOP_LEFT)
 
@@ -54,18 +54,14 @@ def annotate(media: Media, results: sv.Detections) -> Image.Image:
     return annotated_frame
 
 
-def file_output_sink(
-    results: sv.Detections,
-    media: Media,
-    output_path: str,
-):
-    annotated_frame = annotate(media, results)
-    annotated_frame.save(
-        Path(output_path).joinpath(basename(media.path).split(".")[0] + ".jpg")
-    )
+def keypoint_annotator(media: Media, results: sv.KeyPoints) -> Image.Image:
+    raise NotImplementedError
 
 
-def plot_output_sink(results: sv.Detections, media: Media):
-    annotated_frame = annotate(media, results)
-    _ = plt.imshow(annotated_frame)
-    plt.show()
+def annotate(media: Media, results: InferenceResult) -> Image.Image:
+    if isinstance(results, sv.Detections):
+        return box_annotator(media, results)
+    elif isinstance(results, sv.KeyPoints):
+        return keypoint_annotator(media, results)
+    else:
+        raise ValueError(f"Invalid inference result type: {type(results)}")

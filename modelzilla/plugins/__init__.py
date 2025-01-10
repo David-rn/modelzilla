@@ -6,6 +6,9 @@ import inspect
 import supervision as sv
 
 
+InferenceResult = sv.Detections | sv.KeyPoints
+
+
 class IPluginRegistry(type):
     plugins = {}
 
@@ -46,7 +49,8 @@ class CLIPlugin(object, metaclass=IPluginRegistry):
                     help="Required argument",
                 )
 
-    def inference(self) -> sv.Detections:
+    def inference(self) -> InferenceResult:
+        """The inherited classes must implement the inference code here."""
         raise NotImplementedError
 
 
