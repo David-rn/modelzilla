@@ -1,12 +1,13 @@
 import argparse
 from functools import partial
+import sys
 
 from modelzilla.plugins import discover_plugins
 from modelzilla.sinks import file_output_sink, plot_output_sink
 from modelzilla.pipeline import run_cli_plugin_pipeline
 
 
-def make_parser():
+def make_parser(args=None):
     parser = argparse.ArgumentParser(
         description="Plugin system with dynamically loaded arguments."
     )
@@ -32,7 +33,7 @@ def make_parser():
     parser.add_argument(
         "--plugins_folder", default=None, help="Path to custom plugins folder."
     )
-    known_args, _ = parser.parse_known_args()
+    known_args, _ = parser.parse_known_args(args)
     known_args_dict = vars(known_args)
 
     if known_args.output_sink == "file" and known_args.output_folder is None:
@@ -50,22 +51,22 @@ def make_parser():
         )
         plugin_class.build_cmd_parser(plugin_parser)
 
-    args = parser.parse_args()
-    args_dict = vars(args)
+    return parser, known_args_dict
 
+
+def main(args=None):
+    parser, known_args_dict = make_parser(args)
+    args = parser.parse_args(args)
+
+    args_dict = vars(args)
     common_keys = set(known_args_dict.keys()).intersection(args_dict.keys())
     plugin_args = {k: v for k, v in args_dict.items() if k not in common_keys}
     plugin_args.pop("plugin_name")
 
-    return args, plugin_args
-
-
-def main():
-    args, plugin_args = make_parser()
-    print(f"Parsed arguments: {vars(args)}")
+    print(f"Arguments: {args_dict}")
+    print(f"Plugin arguments: {plugin_args}")
 
     plugins = discover_plugins(args.plugins_folder)
-
     plugin_class = plugins[args.plugin_name]
     plugin_instance = plugin_class(**plugin_args)
 
@@ -78,4 +79,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())
