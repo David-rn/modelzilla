@@ -1,4 +1,11 @@
-from transformers import AutoImageProcessor, AutoModelForObjectDetection
+try:
+    from transformers import AutoImageProcessor, AutoModelForObjectDetection
+except ImportError:
+    raise ImportError(
+        "The HFObjectDetection plugin requires the 'hf' extra to be installed."
+        " Please install it with `pip install modelzilla[hf]`."
+    )
+
 import torch
 import supervision as sv
 
