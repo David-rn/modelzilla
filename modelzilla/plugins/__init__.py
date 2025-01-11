@@ -13,7 +13,7 @@ class IPluginRegistry(type):
     plugins = {}
 
     def __init__(cls, name, bases, attrs):
-        if name != "IPlugin":
+        if name != "CLIPlugin":
             IPluginRegistry.plugins[name] = cls
 
 
