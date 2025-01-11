@@ -22,15 +22,15 @@ hf = [
     "timm>=1.0.13",
 ]
 
+[project.scripts]
+modelzilla = "modelzilla.main:main"
+
 [project.urls]
 Homepage = "https://github.com/David-rn/modelzilla/"
 Issues = "https://github.com/David-rn/modelzilla/issues"
 
 [tool.poetry]
 packages = [{include = "modelzilla"}]
-
-[tool.poetry.scripts]
-modelzilla = "modelzilla.main:main"
 
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.8.5"
