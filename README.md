@@ -1,8 +1,16 @@
 # Modelzilla
 
 This library turns any model class into a CLI executable. If you're tired of writing a lot of boilerplate code to run your model, this library is for you.
+It is a lightweight Python package that enables developers to transform any AI model into a fully functional Command-Line Interface (CLI) plugin.
+
+Key features:
+- **Automatic CLI Generation**: Automatically generate CLI commands for models
+- **Customizable Commands**: Each model will have its own CLI parameters
+- **Seamless Integration**: Just inherit from the `CLIPlugin` class and you're ready to go
 
 ## Installation
+
+Pip install the modelzilla package in a Python>=3.10 environment.
 
 ```shell
 pip install modelzilla
