@@ -36,7 +36,7 @@ class MyModel(CLIPlugin):
 ```
 
 ### 2. Execute the model from the CLI
-Now you can execute your model from the CLI. The parameters you added to the `__init__` method will be automatically added to the CLI.
+You can execute your model from the CLI. The parameters included into the `__init__` method will be automatically added to the CLI.
 If the model class in inside the `plugins` folder:
 
 ```shell
@@ -47,4 +47,17 @@ Otherwise, you need to specify the `--plugins_folder` argument:
 
 ```shell
 modelzilla -i image.png -os plot --plugins_folder <path/to/your/plugin/folder> MyModel --model_path model.pth
+```
+
+## Examples
+
+Currently, we provide the following plugins:
+
+- [HFObjectDetection](https://github.com/David-rn/modelzilla/tree/main/modelzilla/plugins/hf_object_det.py): A plugin that uses the HuggingFace Object Detection model.
+
+
+### How to execute it from the CLI
+
+```shell
+modelzilla -i http://images.cocodataset.org/val2017/000000039769.jpg -os plot HFObjectDetection --model_repo facebook/detr-resnet-50
 ```
