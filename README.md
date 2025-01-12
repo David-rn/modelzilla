@@ -58,6 +58,12 @@ Currently, we provide the following plugins:
 
 ### How to execute it from the CLI
 
+Install extra dependencies for the plugin:
+
+```shell
+pip install modelzilla[hf]
+```
+
 ```shell
 modelzilla -i http://images.cocodataset.org/val2017/000000039769.jpg -os plot HFObjectDetection --model_repo facebook/detr-resnet-50
 ```
