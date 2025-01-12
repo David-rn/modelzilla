@@ -9,17 +9,21 @@ classifiers = [
     "License :: OSI Approved :: Apache Software License",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
 ]
 dependencies = [
     "supervision>=0.25.1",
 ]
-requires-python = ">=3.10"
+requires-python = ">=3.10,<3.13"
 
 [project.optional-dependencies]
 hf = [
     "transformers>=4.47.1",
     "torch>=2.1.0",
     "timm>=1.0.13",
+    "numpy<2.0", # Curretly some problems arises with numpy>2 and transformers
 ]
 
 [project.scripts]
@@ -35,6 +39,7 @@ packages = [{include = "modelzilla"}]
 [tool.poetry.group.dev.dependencies]
 ruff = "^0.8.5"
 pytest = "^8.3.4"
+tox = "^4.23.2"
 
 [tool.poetry.group.build.dependencies]
 twine = "^6.0.1"
